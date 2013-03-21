@@ -55,37 +55,43 @@ public class mysql {
 			CallableStatement CS = CON.prepareCall(" { call get_id_tweets(?,?) } ");
 			CS.setString(1,id_tweet);
 			CS.registerOutParameter(2,java.sql.Types.INTEGER);
-			//CS.execute();
+			CS.execute();
 			rpta = CS.getInt(2);
-			System.out.println(rpta);			
+			if (rpta == 0){ 
+				System.out.println("Inserto!");
+				return false;
+			}
 		} catch (SQLException e) {
 			System.out.println("Error al conectar con la base de datos(Buscar). -> " + e.toString());
-		}finally{
-			try {
-				CON.close();
-				if (rpta == 0) return false;
-				else return true;
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
+		System.out.println("No Inserto!");
 		return true;
-		
 	}
 	
 	//funcion de insertar en la tabla tweets
 	public void Insertar(String id_tweet, String text, String from, String to){
+		int rpta = 1;
 		try{
 			CON = DriverManager.getConnection(URL, USER, PASSWORD);
-			if (!Buscar(id_tweet) ){
-				PSTMT = CON.prepareStatement("INSERT INTO tweets(id_tweet, text, from, to) VALUES(?,?,?,?)");
+			
+			CallableStatement CS = CON.prepareCall(" { call get_id_tweets(?,?) } ");
+			CS.setString(1,id_tweet);
+			CS.registerOutParameter(2,java.sql.Types.INTEGER);
+			CS.execute();
+			rpta = CS.getInt(2);
+			
+			if (rpta == 0){
+				PSTMT = CON.prepareStatement(" INSERT INTO tweets(id_tweet, text, from_, to_) VALUES(?,?,?,?) ");
 				PSTMT.setString(1, id_tweet);
 				PSTMT.setString(2, text);
 				PSTMT.setString(3, from);
 				PSTMT.setString(4, to);
 				PSTMT.executeUpdate();
+				System.out.println("Inserto!");
+			}else{
+				System.out.println("No Inserto!");
 			}	
+			
 		}catch(Exception e){
 			System.out.println("Error al conectar con la base de datos(Insertar). -> " + e.toString());
 		}finally{

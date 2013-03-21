@@ -94,14 +94,16 @@ public class twitter {
     	String from = tweet.getSource();
     	String to = tweet.getUser().getScreenName();
     	
+    	//System.out.println(from.length());
+    	
     	mysql m = new mysql("twitter", "127.0.0.1", "twitter", "twitter");
     	m.Insertar(id_tweet, text, from, to);
     }
     
     //Recuperar listado de ultimos tweets escritos 3210
     public void ObtenerTweets(){
-        for (int i = 1; i< 2; i++){ //25
-	        Paging pagina = new Paging(i,10);  //200
+        for (int i = 1; i< 25; i++){ //25
+	        Paging pagina = new Paging(i,200);  //200
 	        ResponseList<Status> listado;
 			try {
 				listado = twitter_.getUserTimeline("naturanet",pagina);
