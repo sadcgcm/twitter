@@ -13,7 +13,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
-
+import com.bg.bd.mysql;
 
 /**
  * @author KRISTIAN
@@ -87,58 +87,33 @@ public class twitter {
     	return twitter_;
     }
     
-    public void Varios(){
-    	//Recuperar listado de ultimos tweets escritos
-        //El paging sirve para decir el número máx de tweets que quieres recuperar
-        Paging pagina = new Paging(2);
-        pagina.setCount(200);
-         
-        //Recupera como máx tweets escritos por tí
-        //ResponseList<Status> listado = twitter.getUserTimeline(pagina);
-        ResponseList<Status> listado;
-		try {
-			listado = twitter_.getUserTimeline("naturanet",pagina);
-
-        System.out.println(listado.size());
-        //for (int i = 0; i < listado.size(); i++)
-            
-        	//System.out.println(listado.get(i).getUser());
-        
-        //Recupera como máx los ultimos tweets de tus novedades
-        /*listado = twitter.getHomeTimeline(pagina);
-        for (int i = 0; i < listado.size(); i++)
-            System.out.println(listado.get(i).getText());
-         */
-        //Actualizar tu estado
-        //Status tweetEscrito = twitter.updateStatus("¡Probando!");
-		} catch (TwitterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        System.out.println("-------------------------------");
-        try {
-	        Query query = new Query("@naturanet");
-	        QueryResult result;
-	        int i = 0;
-	        do {
-	            
-	        	result = twitter_.search(query);
-	        	List<Status> tweets = result.getTweets();
-	            //System.out.println(tweets.size());
-	            for (Status tweet : tweets) {
-	                //System.out.println(tweet.getUser());
-	            	//System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText() + " - " + tweet.getSource());
-	            	//System.out.println(++i);
-	            	//System.out.println(tweet.getId());
-	            }
-	        } while ((query = result.nextQuery()) != null);
-	        System.exit(0);
-	    } catch (TwitterException te) {
-	        te.printStackTrace();
-	        System.out.println("Failed to search tweets: " + te.getMessage());
-	        System.exit(-1);
-	    }
-    }
+    //almacenar en la base de datos
+    public void Almacenar(Status tweet){
+    	String id_tweet = Long.toString( tweet.getId() );
+    	String text = tweet.getText();
+    	String from = tweet.getSource();
+    	String to = tweet.getUser().getScreenName();
     	
+    	mysql m = new mysql("twitter", "127.0.0.1", "twitter", "twitter");
+    	m.Insertar(id_tweet, text, from, to);
+    }
     
+    //Recuperar listado de ultimos tweets escritos 3210
+    public void ObtenerTweets(){
+        for (int i = 1; i< 2; i++){ //25
+	        Paging pagina = new Paging(i,10);  //200
+	        ResponseList<Status> listado;
+			try {
+				listado = twitter_.getUserTimeline("naturanet",pagina);
+				if (listado.size() > 0){
+					for (int j = 0; j < listado.size(); j++){
+						Almacenar( listado.get(j) );
+					}
+				}
+			} catch (TwitterException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+    }
 }

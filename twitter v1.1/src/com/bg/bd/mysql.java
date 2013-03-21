@@ -36,7 +36,7 @@ public class mysql {
 			CON = DriverManager.getConnection(URL, USER, PASSWORD);
 			System.out.println("Success!");
 		}catch(Exception e){
-			System.out.println("Error -> " + e.toString());
+			System.out.println("Error(Test) -> " + e.toString());
 		}finally{
 			try {
 				CON.close();
@@ -55,11 +55,11 @@ public class mysql {
 			CallableStatement CS = CON.prepareCall(" { call get_id_tweets(?,?) } ");
 			CS.setString(1,id_tweet);
 			CS.registerOutParameter(2,java.sql.Types.INTEGER);
-			CS.execute();
+			//CS.execute();
 			rpta = CS.getInt(2);
 			System.out.println(rpta);			
 		} catch (SQLException e) {
-			System.out.println("Error al conectar con la base de datos. -> " + e.toString());
+			System.out.println("Error al conectar con la base de datos(Buscar). -> " + e.toString());
 		}finally{
 			try {
 				CON.close();
@@ -87,7 +87,7 @@ public class mysql {
 				PSTMT.executeUpdate();
 			}	
 		}catch(Exception e){
-			System.out.println("Error al conectar con la base de datos. -> " + e.toString());
+			System.out.println("Error al conectar con la base de datos(Insertar). -> " + e.toString());
 		}finally{
 			try {
 				CON.close();
