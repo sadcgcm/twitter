@@ -1,14 +1,11 @@
 package com.bg.bd;
-import java.sql.ResultSet;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import com.mysql.jdbc.PreparedStatement;
+
 /**
  * 
  * @author KRISTIAN
@@ -24,6 +21,7 @@ public class mysql {
 	private Connection CON;
 	private PreparedStatement PSTMT;
 	
+	//Estableciendo los parametros iniciales del mysql
 	public mysql (String DATABASE_, String HOST_, String USER_, String PASSWORD_){
 		DATABASE = DATABASE_;
 		HOST = HOST_;
@@ -32,14 +30,71 @@ public class mysql {
 		URL = "jdbc:mysql://" + HOST + ":3306/" + DATABASE; 
 	}
 	
-	public void Insertar(){
+	
+	public void Test(){
 		try{
 			CON = DriverManager.getConnection(URL, USER, PASSWORD);
-			PSTMT = CON.prepareStatement("INSERT INTO tweets VALUES(?,?,?,?)");
-			PSTMT.setString(1, author);
-			PSTMT.executeUpdate();
-		}catch{
-			
+			System.out.println("Success!");
+		}catch(Exception e){
+			System.out.println("Error -> " + e.toString());
+		}finally{
+			try {
+				CON.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	//funcion para verificar si los tweets estan almacenados
+	public boolean Buscar(String id_tweet){
+		int rpta = 1;
+		try {
+			CON = DriverManager.getConnection(URL, USER, PASSWORD);
+			CallableStatement CS = CON.prepareCall(" { call get_id_tweets(?,?) } ");
+			CS.setString(1,id_tweet);
+			CS.registerOutParameter(2,java.sql.Types.INTEGER);
+			CS.execute();
+			rpta = CS.getInt(2);
+			System.out.println(rpta);			
+		} catch (SQLException e) {
+			System.out.println("Error al conectar con la base de datos. -> " + e.toString());
+		}finally{
+			try {
+				CON.close();
+				if (rpta == 0) return false;
+				else return true;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return true;
+		
+	}
+	
+	//funcion de insertar en la tabla tweets
+	public void Insertar(String id_tweet, String text, String from, String to){
+		try{
+			CON = DriverManager.getConnection(URL, USER, PASSWORD);
+			if (!Buscar(id_tweet) ){
+				PSTMT = CON.prepareStatement("INSERT INTO tweets(id_tweet, text, from, to) VALUES(?,?,?,?)");
+				PSTMT.setString(1, id_tweet);
+				PSTMT.setString(2, text);
+				PSTMT.setString(3, from);
+				PSTMT.setString(4, to);
+				PSTMT.executeUpdate();
+			}	
+		}catch(Exception e){
+			System.out.println("Error al conectar con la base de datos. -> " + e.toString());
+		}finally{
+			try {
+				CON.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
