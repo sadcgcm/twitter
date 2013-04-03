@@ -24,6 +24,7 @@ public class User {
 	private String screen_name;
 	private int statuses_count;
 	private List<Tweet> tweets;
+	private List<User> Followwers;
 
 	/**
 	 * Constructor
@@ -52,6 +53,7 @@ public class User {
 		this.screen_name = screen_name;
 		this.statuses_count = statuses_count;
 		LoadTweets(id_user);
+		LoadFollowers(id_user);
 	}
 	/**
 	 * @return the id_user
@@ -188,13 +190,25 @@ public class User {
 	
 	private void LoadTweets(String id_user){
 		mysql m = new mysql();
+		//tweets = m.getAllTweets(id_user);
+		tweets = m.getAllTweets(id_user, JsonGlobals.MAX_TWEETS);
+	}
+	
+	private void LoadFollowers(String id_user){
 		
 	}
 	
 	@Override
 	public String toString() {
 		return new StringBuffer(" id_user=").append(this.id_user).append(",name=").append(this.name).append(", location=").append(this.location)
-				.append(", description=").append(this.description).append(", followers_count=").append(this.followers_count).append(", create_at=").append(this.create_at).append(", json=").append(this.json)
-				.append(", friends_count=").append(this.friends_count).append(", listed_count=").append(this.listed_count).append(", screen_name=").append(this.screen_name).append(", statuses_count=").append(this.statuses_count).toString();
+				.append(", description=").append(this.description).append(", followers_count=").append(this.followers_count)
+				.append(", create_at=").append(this.create_at).append(", json=").append(this.json).append(", friends_count=").append(this.friends_count)
+				.append(", listed_count=").append(this.listed_count).append(", screen_name=").append(this.screen_name)
+				.append(", statuses_count=").append(this.statuses_count).append(", Tweets=").append(this.tweets).toString();
+	}
+	
+	public void to_convert(){
+		Json j = new Json();
+		j.toJson(this);
 	}
 }

@@ -35,8 +35,8 @@ public class Tweet_twitter {
 	
 	public void AlmacenarTweets(){
 		mysql m = new mysql();
-		System.out.println (m.InsertarTweets(id_tweet, text, to_, source, create_at, json, place, retweet_count, truncate, user) );
-		System.out.println ( m.InsertarUserTweet(user_owner, id_tweet) );
+		System.out.println (m.InsertarTweets(id_tweet, text, to_, source, create_at, json, place, retweet_count, truncate, user));
+		System.out.println (m.InsertarUserTweet(user_owner, id_tweet) );
 	}
 	
 }

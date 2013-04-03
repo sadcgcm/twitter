@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bg.bd.mysql.mysql;
+import com.bg.parser.json.User;
 
 import twitter4j.IDs;
 import twitter4j.Paging;
@@ -174,7 +175,7 @@ public class User_twitter {
 				list_tweets = twitter_.getUserTimeline(screen_name, pagina);
 				if (list_tweets.size() > 0){
 					for (int j = 0; j < list_tweets.size(); j++){
-						System.out.println(list_tweets.get(j).toString());
+						//System.out.println(list_tweets.get(j).toString());
 						Tweets.add( new Tweet_twitter( list_tweets.get(j), id_user ) );
 					}
 				}
@@ -183,5 +184,11 @@ public class User_twitter {
 				e.printStackTrace();
 			}
         }
+    }
+    
+    public void ConvertToJson(){
+    	System.out.println("entre");
+    	User u = new User(id_user, name, location , description, followers_count, create_at, json, friends_count, listed_count, screen_name, statuses_count);
+    	u.to_convert();
     }
 }

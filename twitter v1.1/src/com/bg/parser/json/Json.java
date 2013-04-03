@@ -6,7 +6,15 @@ import java.io.IOException;
 import com.google.gson.Gson;
 
 class Json {
+	
 	private String path;
+	
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return path;
+	}
 	
 	public Json(){
 		this.path = JsonGlobals.Path;		

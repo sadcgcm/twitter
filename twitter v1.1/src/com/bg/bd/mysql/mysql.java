@@ -1,9 +1,15 @@
 package com.bg.bd.mysql;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.bg.parser.json.Tweet;
 
 
 /**
@@ -297,13 +303,72 @@ public class mysql {
 	}
 	
 	
-	public void getAllTweets(String id_user){
+	public List<Tweet> getAllTweets(String id_user){
+		List<Tweet> List_tweets = new ArrayList<Tweet>();
 		try {
 			CON = DriverManager.getConnection(URL, USER, PASSWORD);
+			String query = "select t.id_tweet, t.text, t.to_, t.source, t.create_at, t.json, t.place, t.retweet_count, t.truncate from tweets t, tweet_user tu where t.id_tweet = tu.id_tweet and tu.id_user=" + id_user;
+			Statement  STMT = CON.createStatement();
+			ResultSet RS = STMT.executeQuery(query);
+			while(RS.next()){
+				String id_tweet = RS.getString(1);
+				String text = RS.getString(2);
+				String to = RS.getString(3);
+				String source = RS.getString(4);
+				String json = RS.getString(5);
+				String place = RS.getString(6);
+				int retweet_count = RS.getInt(7);
+				boolean truncate = RS.getBoolean(8);
+				RS.getBoolean(9);
+				List_tweets.add( new Tweet(id_tweet, text, to, source, json, place, retweet_count, truncate) );	
+			}	
+	        RS.close();
+	        STMT.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-		
+	    } finally {
+	      try {
+	        CON.close();
+	      } catch (SQLException e) {
+	        e.printStackTrace();
+	      }
+	    }
+		return List_tweets;
+	} 
+	
+	public List<Tweet> getAllTweets(String id_user, int count_tweets){
+		List<Tweet> List_tweets = new ArrayList<Tweet>();
+		int i = 1;
+		try {
+			CON = DriverManager.getConnection(URL, USER, PASSWORD);
+			String query = "select t.id_tweet, t.text, t.to_, t.source, t.create_at, t.json, t.place, t.retweet_count, t.truncate from tweets t, tweet_user tu where t.id_tweet = tu.id_tweet and tu.id_user=" + id_user;
+			Statement  STMT = CON.createStatement();
+			ResultSet RS = STMT.executeQuery(query);
+			while(RS.next() && (i<= count_tweets) ){
+				String id_tweet = RS.getString(1);
+				String text = RS.getString(2);
+				String to = RS.getString(3);
+				String source = RS.getString(4);
+				String json = RS.getString(5);
+				String place = RS.getString(6);
+				int retweet_count = RS.getInt(7);
+				boolean truncate = RS.getBoolean(8);
+				RS.getBoolean(9);
+				List_tweets.add( new Tweet(id_tweet, text, to, source, json, place, retweet_count, truncate) );
+				i++;
+			}	
+	        RS.close();
+	        STMT.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+	    } finally {
+	      try {
+	        CON.close();
+	      } catch (SQLException e) {
+	        e.printStackTrace();
+	      }
+	    }
+		return List_tweets;
 	} 
 
 }

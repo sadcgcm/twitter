@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Iterator;
+import com.google.gson.Gson;
 
 import twitter4j.IDs;
 import twitter4j.Paging;
@@ -20,7 +21,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import com.bg.bd.mysql.mysql;
 
-import facebook4j.User;
+import com.bg.parser.json.*;
 
 /**
  * @author KRISTIAN
@@ -94,7 +95,7 @@ public class twitter {
     public void ObtenerInformation() throws TwitterException{
     	user.AlmacenarUser();
     	//user.ObtenerTweets();
-    	user.ObtenerFollowers();
+    	//user.ObtenerFollowers();
+    	user.ConvertToJson();
     }
-    
 }

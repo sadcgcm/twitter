@@ -24,11 +24,11 @@ public class main {
 		twitter t = new twitter();
 		t.Authenticate();
 		//t.ObtenerUsuario("cea_brasil");
-		//t.ObtenerUsuario("naturanet");
-		//t.ObtenerInformation();
+		t.ObtenerUsuario("naturanet");
+		t.ObtenerInformation();
 		
-		stopword s = new stopword();
-		s.getWords();
+		//stopword s = new stopword();
+		//s.getWords();
 
 	}
 
